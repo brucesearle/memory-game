@@ -30,16 +30,18 @@ function createBoard() {
         let card = document.createElement('div');
         card.classList.add('card');
         card.dataset.symbol = symbols[i];
-        card.addEventListener('click', flipCard);
+        card.addEventListener('click', function () {
+            flipCard.call(this, i);
+        });
         gameBoard.appendChild(card);
     }
 }
 
-function flipCard() {
+function flipCard(index) {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
         this.classList.add('flipped');
         this.innerHTML = this.dataset.symbol;
-        updateTileHistory(this.dataset.symbol);
+        updateTileHistory(this.dataset.symbol, index);
         flippedCards.push(this);
 
         if (flippedCards.length === 2) {
@@ -64,12 +66,14 @@ function checkMatch() {
     flippedCards = [];
 }
 
-function updateTileHistory(symbol) {
-    lastFlipped.unshift(symbol); // Add to the beginning
-    if (lastFlipped.length > 5) lastFlipped.pop(); // Keep only 5
+function updateTileHistory(symbol, index) {
+    const row = Math.floor(index / 8) + 1;
+    const col = (index % 8) + 1;
+    lastFlipped.unshift(`${symbol} (${row}, ${col})`);
+    if (lastFlipped.length > 5) lastFlipped.pop();
 
     const historyDiv = document.getElementById('tile-history');
-    historyDiv.innerHTML = lastFlipped.map(sym => `<span>${sym}</span>`).join('');
+    historyDiv.innerHTML = lastFlipped.map(entry => `<span>${entry}</span>`).join('');
 }
 
 restartButton.addEventListener('click', () => {
