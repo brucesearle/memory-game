@@ -37,13 +37,12 @@ function createBoard() {
     }
 }
 
-function flipCard(index) {
+function flipCard(index) {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
         this.classList.add('flipped');
         this.innerHTML = this.dataset.symbol;
-        updateTileHistory(this.dataset.symbol, index);
         flippedCards.push(this);
-
+        updateTileHistory(this.dataset.symbol, index);
         if (flippedCards.length === 2) {
             setTimeout(checkMatch, 1000);
         }
@@ -51,29 +50,45 @@ function flipCard(index) {
 }
 
 function checkMatch() {
-    let [card1, card2] = flippedCards;
+    const [card1, card2] = flippedCards;
+
     if (card1.dataset.symbol === card2.dataset.symbol) {
         matchedPairs += 1;
-        if (matchedPairs === symbols.length / 2) {
+
+        // Remove matched symbol from history
+        lastFlipped = lastFlipped.filter(entry => entry.symbol !== card1.dataset.symbol);
+        renderTileHistory();
+
+        if (matchedPairs === 32) {
             setTimeout(() => alert('You win!'), 500);
         }
     } else {
         card1.classList.remove('flipped');
-        card1.innerHTML = '';
         card2.classList.remove('flipped');
+        card1.innerHTML = '';
         card2.innerHTML = '';
     }
+
     flippedCards = [];
 }
+
 
 function updateTileHistory(symbol, index) {
     const row = Math.floor(index / 8) + 1;
     const col = (index % 8) + 1;
-    lastFlipped.unshift(`${symbol} (${row}, ${col})`);
+    lastFlipped.unshift({ symbol, position: `(${row}, ${col})` });
+
+    // Keep only the last 5 unmatched
     if (lastFlipped.length > 5) lastFlipped.pop();
 
+    renderTileHistory();
+}
+
+function renderTileHistory() {
     const historyDiv = document.getElementById('tile-history');
-    historyDiv.innerHTML = lastFlipped.map(entry => `<span>${entry}</span>`).join('');
+    historyDiv.innerHTML = lastFlipped
+        .map(entry => `<span>${entry.symbol} ${entry.position}</span>`)
+        .join('');
 }
 
 restartButton.addEventListener('click', () => {
