@@ -13,6 +13,8 @@ let gameBoard = document.getElementById('game-board');
 let restartButton = document.getElementById('restart-button');
 let flippedCards = [];
 let matchedPairs = 0;
+let lastFlipped = [];
+
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -37,6 +39,7 @@ function flipCard() {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
         this.classList.add('flipped');
         this.innerHTML = this.dataset.symbol;
+        updateTileHistory(this.dataset.symbol);
         flippedCards.push(this);
 
         if (flippedCards.length === 2) {
@@ -59,6 +62,14 @@ function checkMatch() {
         card2.innerHTML = '';
     }
     flippedCards = [];
+}
+
+function updateTileHistory(symbol) {
+    lastFlipped.unshift(symbol); // Add to the beginning
+    if (lastFlipped.length > 5) lastFlipped.pop(); // Keep only 5
+
+    const historyDiv = document.getElementById('tile-history');
+    historyDiv.innerHTML = lastFlipped.map(sym => `<span>${sym}</span>`).join('');
 }
 
 restartButton.addEventListener('click', () => {
