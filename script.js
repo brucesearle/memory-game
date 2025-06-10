@@ -55,8 +55,10 @@ function checkMatch() {
     if (card1.dataset.symbol === card2.dataset.symbol) {
         matchedPairs += 1;
 
-        // Remove matched symbol from history
-        lastFlipped = lastFlipped.filter(entry => entry.symbol !== card1.dataset.symbol);
+        const id1 = `${card1.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card1) / 8) + 1}-${([...gameBoard.children].indexOf(card1) % 8) + 1}`;
+        const id2 = `${card2.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card2) / 8) + 1}-${([...gameBoard.children].indexOf(card2) % 8) + 1}`;
+
+        lastFlipped = lastFlipped.filter(entry => entry.id !== id1 && entry.id !== id2);
         renderTileHistory();
 
         if (matchedPairs === 32) {
@@ -73,16 +75,20 @@ function checkMatch() {
 }
 
 
+
 function updateTileHistory(symbol, index) {
     const row = Math.floor(index / 8) + 1;
     const col = (index % 8) + 1;
-    lastFlipped.unshift({ symbol, position: `(${row}, ${col})` });
+    lastFlipped.unshift({
+        symbol,
+        position: `(${row}, ${col})`,
+        id: `${symbol}-${row}-${col}`
+    });
 
-    // Keep only the last 5 unmatched
     if (lastFlipped.length > 5) lastFlipped.pop();
-
     renderTileHistory();
 }
+
 
 function renderTileHistory() {
     const historyDiv = document.getElementById('tile-history');
@@ -90,6 +96,7 @@ function renderTileHistory() {
         .map(entry => `<span>${entry.symbol} ${entry.position}</span>`)
         .join('');
 }
+
 
 restartButton.addEventListener('click', () => {
     matchedPairs = 0;
