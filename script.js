@@ -9,6 +9,9 @@ const symbols = [
     '🍄', '🥜', '🌰', '🍯', '🥚', '🧀', '🥖', '🥨'
 ];
 
+const difficultySelect = document.getElementById('difficulty');
+
+let gridSize = 8; // default to hard
 let gameBoard = document.getElementById('game-board');
 let restartButton = document.getElementById('restart-button');
 let flippedCards = [];
@@ -29,7 +32,14 @@ function shuffle(array) {
 
 function createBoard() {
     gameBoard.innerHTML = '';
-    const shuffledSymbols = [...symbols];
+
+    // Set grid size in CSS
+    gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 100px)`;
+    gameBoard.style.gridTemplateRows = `repeat(${gridSize}, 100px)`;
+
+    const totalCards = gridSize * gridSize;
+    const pairsNeeded = totalCards / 2;
+    const shuffledSymbols = [...symbols].slice(0, pairsNeeded * 2);
     shuffle(shuffledSymbols);
 
     for (let i = 0; i < shuffledSymbols.length; i++) {
@@ -37,7 +47,6 @@ function createBoard() {
         card.classList.add('card');
         card.dataset.symbol = shuffledSymbols[i];
 
-        // Show symbols immediately if memory challenge is enabled
         if (memoryChallengeEnabled) {
             card.innerHTML = shuffledSymbols[i];
             card.classList.add('flipped');
@@ -50,10 +59,8 @@ function createBoard() {
         gameBoard.appendChild(card);
     }
 
-    // If memory challenge is enabled, hide all cards after 3 seconds
     if (memoryChallengeEnabled) {
         setTimeout(() => {
-            console.log('Hiding all cards after memory challenge preview...');
             const allCards = document.querySelectorAll('.card');
             allCards.forEach(card => {
                 card.classList.remove('flipped');
@@ -62,6 +69,7 @@ function createBoard() {
         }, 3000);
     }
 }
+
 
 
 function startTimer() {
@@ -115,14 +123,14 @@ function checkMatch() {
     if (card1.dataset.symbol === card2.dataset.symbol) {
         matchedPairs += 1;
 
-        const id1 = `${card1.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card1) / 8) + 1}-${([...gameBoard.children].indexOf(card1) % 8) + 1}`;
-        const id2 = `${card2.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card2) / 8) + 1}-${([...gameBoard.children].indexOf(card2) % 8) + 1}`;
+        const id1 = `${card1.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card1) / gridSize) + 1}-${([...gameBoard.children].indexOf(card1) % gridSize) + 1}`;
+        const id2 = `${card2.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card2) / gridSize) + 1}-${([...gameBoard.children].indexOf(card2) % gridSize) + 1}`;
 
         lastFlipped = lastFlipped.filter(entry => entry.id !== id1 && entry.id !== id2);
         renderTileHistory();
 
-        if (matchedPairs === 32) {
-            stopTimer(); // Stop the timer when the game is won
+        if (matchedPairs === (gridSize * gridSize) / 2) {
+            stopTimer();
             setTimeout(() => alert('You win!'), 500);
         }
     } else {
@@ -134,20 +142,6 @@ function checkMatch() {
 
     flippedCards = [];
 }
-
-function updateTileHistory(symbol, index) {
-    const row = Math.floor(index / 8) + 1;
-    const col = (index % 8) + 1;
-    lastFlipped.unshift({
-        symbol,
-        position: `(${row}, ${col})`,
-        id: `${symbol}-${row}-${col}`
-    });
-
-    if (lastFlipped.length > 5) lastFlipped.pop();
-    renderTileHistory();
-}
-
 
 function renderTileHistory() {
     const historyDiv = document.getElementById('tile-history');
@@ -163,6 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
     memoryToggle.addEventListener('change', () => {
         memoryChallengeEnabled = memoryToggle.checked;
         console.log('Memory Challenge Mode:', memoryChallengeEnabled);
+    });
+
+   difficultySelect.addEventListener('change', () => {
+        const value = difficultySelect.value;
+        if (value === 'easy') gridSize = 4;
+        else if (value === 'medium') gridSize = 6;
+        else gridSize = 8;
     });
 
     restartButton.addEventListener('click', () => {
