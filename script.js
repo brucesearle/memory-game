@@ -94,6 +94,7 @@ function checkMatch() {
         renderTileHistory();
 
         if (matchedPairs === 32) {
+            stopTimer(); // Stop the timer when the game is won
             setTimeout(() => alert('You win!'), 500);
         }
     } else {
@@ -134,6 +135,7 @@ restartButton.addEventListener('click', () => {
     lastFlipped = [];
     stopTimer();
     Timer = 0;
+    timerInterval = null; //Reset the interval reference
     Document.getElementById('timer').textContent = timer;
     resetMoveCounter();
     createBoard();
