@@ -27,11 +27,12 @@ function shuffle(array) {
 
 function createBoard() {
     gameBoard.innerHTML = '';
-    shuffle(symbols);
-    for (let i = 0; i < symbols.length; i++) {
+    const shuffledSymbols = [...symbols]; // clone the array
+    shuffle(shuffledSymbols);
+    for (let i = 0; i < shuffledSymbols.length; i++) {
         let card = document.createElement('div');
         card.classList.add('card');
-        card.dataset.symbol = symbols[i];
+        card.dataset.symbol = shuffledSymbols[i];
         card.addEventListener('click', function () {
             flipCard.call(this, i);
         });
@@ -55,11 +56,13 @@ function stopTimer() {
 
 function resetMoveCounter() {
     moveCount = 0;
+    console.log('resetMoveCounter called. moveCount =', moveCount); // Debug log
     document.getElementById('move-counter').textContent = moveCount;
 }
 
 function incrementMoveCounter() {
     moveCount++;
+    Console.log('Move made. moveCount =', moveCount); // Debug log
     document.getElementById('move-counter').textContent = moveCount;
 }
 
@@ -131,6 +134,7 @@ function renderTileHistory() {
 
 
 restartButton.addEventListener('click', () => {
+    console.log('Restart button clicked'); // Debug log
     matchedPairs = 0;
     flippedCards = [];
     lastFlipped = [];
