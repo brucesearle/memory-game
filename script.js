@@ -37,6 +37,7 @@ function createBoard() {
         card.classList.add('card');
         card.dataset.symbol = shuffledSymbols[i];
 
+        // Show symbols immediately if memory challenge is enabled
         if (memoryChallengeEnabled) {
             card.innerHTML = shuffledSymbols[i];
             card.classList.add('flipped');
@@ -49,8 +50,10 @@ function createBoard() {
         gameBoard.appendChild(card);
     }
 
+    // If memory challenge is enabled, hide all cards after 3 seconds
     if (memoryChallengeEnabled) {
         setTimeout(() => {
+            console.log('Hiding all cards after memory challenge preview...');
             const allCards = document.querySelectorAll('.card');
             allCards.forEach(card => {
                 card.classList.remove('flipped');
@@ -59,6 +62,7 @@ function createBoard() {
         }, 3000);
     }
 }
+
 
 function startTimer() {
     timer = 0;
