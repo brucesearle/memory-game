@@ -12,6 +12,14 @@ body {
     margin: 20px auto;
 }
 
+#game-info {
+    margin-top: 10px;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
 .card {
     width: 100px;
     height: 100px;
@@ -21,9 +29,11 @@ body {
     justify-content: center;
     font-size: 24px;
     cursor: pointer;
+    Transition: transform 0.3s ease;
 }
 
 .card.flipped {
+    Transform: rotateY(180deg);
     background-color: #fff;
 }
 
