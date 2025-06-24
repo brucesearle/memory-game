@@ -152,18 +152,26 @@ function renderTileHistory() {
         .join('');
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const memoryToggle = document.getElementById('memory-mode-toggle');
+    const restartButton = document.getElementById('restart-button');
 
-restartButton.addEventListener('click', () => {
-    console.log('Restart button clicked'); // Debug log
-    matchedPairs = 0;
-    flippedCards = [];
-    lastFlipped = [];
-    stopTimer(); // also sets timerInterval = null
-    timer = 0;
-    document.getElementById('timer').textContent = timer;
-    resetMoveCounter();
-    renderTileHistory(); // Clear tile history display
-    createBoard();
+    memoryToggle.addEventListener('change', () => {
+        memoryChallengeEnabled = memoryToggle.checked;
+    });
+
+    restartButton.addEventListener('click', () => {
+        console.log('Restart button clicked');
+        matchedPairs = 0;
+        flippedCards = [];
+        lastFlipped = [];
+        stopTimer();
+        timer = 0;
+        document.getElementById('timer').textContent = timer;
+        resetMoveCounter();
+        renderTileHistory();
+        createBoard();
+    });
+
+    createBoard(); // Initial board setup
 });
-
-createBoard();
