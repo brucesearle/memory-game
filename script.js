@@ -98,6 +98,19 @@ function incrementMoveCounter() {
     document.getElementById('move-counter').textContent = moveCount;
 }
 
+function updateTileHistory(symbol, index) {
+    const row = Math.floor(index / gridSize) + 1;
+    const col = (index % gridSize) + 1;
+    lastFlipped.unshift({
+        symbol,
+        position: `(${row}, ${col})`,
+        id: `${symbol}-${row}-${col}`
+    });
+
+    if (lastFlipped.length > 5) lastFlipped.pop();
+    renderTileHistory();
+}
+
 function flipCard(index) {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
         if (matchedPairs === 0 && timer === 0 && !timerInterval) {
