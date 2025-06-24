@@ -134,10 +134,11 @@ restartButton.addEventListener('click', () => {
     flippedCards = [];
     lastFlipped = [];
     stopTimer();
-    Timer = 0;
+    timer = 0;
     timerInterval = null; //Reset the interval reference
     Document.getElementById('timer').textContent = timer;
     resetMoveCounter();
+    renterTileHistory(); // Clear tile history display
     createBoard();
 });
 
