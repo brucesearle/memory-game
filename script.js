@@ -21,7 +21,18 @@ let timer = 0;
 let timerInterval;
 let moveCount = 0;
 let memoryChallengeEnabled = false;
+let score = 0;
 
+function resetScore() {
+    score = 0;
+    document.getElementById('score').textContent = score;
+}
+
+function updateScore(points) {
+    score += points;
+    if (score < 0) score = 0; // Prevent negative score
+    document.getElementById('score').textContent = score;
+}
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -135,6 +146,7 @@ function checkMatch() {
 
     if (card1.dataset.symbol === card2.dataset.symbol) {
         matchedPairs += 1;
+        updateScore(10); // ✅ Add points for a match
 
         const id1 = `${card1.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card1) / gridSize) + 1}-${([...gameBoard.children].indexOf(card1) % gridSize) + 1}`;
         const id2 = `${card2.dataset.symbol}-${Math.floor([...gameBoard.children].indexOf(card2) / gridSize) + 1}-${([...gameBoard.children].indexOf(card2) % gridSize) + 1}`;
@@ -147,6 +159,7 @@ function checkMatch() {
             setTimeout(() => alert('You win!'), 500);
         }
     } else {
+        updateScore(-2); // ❌ Deduct points for a mismatch
         card1.classList.remove('flipped');
         card2.classList.remove('flipped');
         card1.innerHTML = '';
@@ -187,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopTimer();
         timer = 0;
         document.getElementById('timer').textContent = timer;
+        resetScore();
         resetMoveCounter();
         renderTileHistory();
         createBoard();
