@@ -17,6 +17,8 @@ let lastFlipped = [];
 let timer = 0;
 let timerInterval;
 let moveCount = 0;
+let memoryChallengeEnabled = false;
+
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -27,16 +29,34 @@ function shuffle(array) {
 
 function createBoard() {
     gameBoard.innerHTML = '';
-    const shuffledSymbols = [...symbols]; // clone the array
+    const shuffledSymbols = [...symbols];
     shuffle(shuffledSymbols);
+
     for (let i = 0; i < shuffledSymbols.length; i++) {
         let card = document.createElement('div');
         card.classList.add('card');
         card.dataset.symbol = shuffledSymbols[i];
+
+        if (memoryChallengeEnabled) {
+            card.innerHTML = shuffledSymbols[i];
+            card.classList.add('flipped');
+        }
+
         card.addEventListener('click', function () {
             flipCard.call(this, i);
         });
+
         gameBoard.appendChild(card);
+    }
+
+    if (memoryChallengeEnabled) {
+        setTimeout(() => {
+            const allCards = document.querySelectorAll('.card');
+            allCards.forEach(card => {
+                card.classList.remove('flipped');
+                card.innerHTML = '';
+            });
+        }, 3000);
     }
 }
 
