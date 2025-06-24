@@ -62,7 +62,7 @@ function resetMoveCounter() {
 
 function incrementMoveCounter() {
     moveCount++;
-    Console.log('Move made. moveCount =', moveCount); // Debug log
+    console.log('Move made. moveCount =', moveCount); // Debug log
     document.getElementById('move-counter').textContent = moveCount;
 }
 
