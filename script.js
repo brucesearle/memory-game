@@ -14,7 +14,9 @@ let restartButton = document.getElementById('restart-button');
 let flippedCards = [];
 let matchedPairs = 0;
 let lastFlipped = [];
-
+let timer = 0;
+let timerInterval;
+let moveCount = 0;
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -37,17 +39,45 @@ function createBoard() {
     }
 }
 
+function startTimer() {
+    timer = 0;
+    document.getElementById('timer').textContent = timer;
+    timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = timer;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+function resetMoveCounter() {
+    moveCount = 0;
+    document.getElementById('move-counter').textContent = moveCount;
+}
+
+function incrementMoveCounter() {
+    moveCount++;
+    document.getElementById('move-counter').textContent = moveCount;
+}
+
 function flipCard(index) {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+        if (matchedPairs === 0 && timer === 0) startTimer(); // Start timer on first move
+
         this.classList.add('flipped');
         this.innerHTML = this.dataset.symbol;
         flippedCards.push(this);
         updateTileHistory(this.dataset.symbol, index);
+
         if (flippedCards.length === 2) {
+            incrementMoveCounter();
             setTimeout(checkMatch, 1000);
         }
     }
 }
+
 
 function checkMatch() {
     const [card1, card2] = flippedCards;
@@ -74,8 +104,6 @@ function checkMatch() {
     flippedCards = [];
 }
 
-
-
 function updateTileHistory(symbol, index) {
     const row = Math.floor(index / 8) + 1;
     const col = (index % 8) + 1;
@@ -101,6 +129,9 @@ function renderTileHistory() {
 restartButton.addEventListener('click', () => {
     matchedPairs = 0;
     flippedCards = [];
+    lastFlipped = [];
+    stopTimer();
+    resetMoveCounter();
     createBoard();
 });
 
