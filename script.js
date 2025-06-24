@@ -50,6 +50,7 @@ function startTimer() {
 
 function stopTimer() {
     clearInterval(timerInterval);
+    timerInterval = null;
 }
 
 function resetMoveCounter() {
@@ -133,12 +134,11 @@ restartButton.addEventListener('click', () => {
     matchedPairs = 0;
     flippedCards = [];
     lastFlipped = [];
-    stopTimer();
+    stopTimer(); // also sets timerInterval = null
     timer = 0;
-    timerInterval = null; //Reset the interval reference
-    Document.getElementById('timer').textContent = timer;
+    document.getElementById('timer').textContent = timer;
     resetMoveCounter();
-    renterTileHistory(); // Clear tile history display
+    renderTileHistory(); // Clear tile history display
     createBoard();
 });
 
