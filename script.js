@@ -64,7 +64,9 @@ function incrementMoveCounter() {
 
 function flipCard(index) {
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
-        if (matchedPairs === 0 && timer === 0) startTimer(); // Start timer on first move
+        if (matchedPairs === 0 && timer === 0 && !timerInterval) {
+            startTimer(); // Start timer on first move
+        }
 
         this.classList.add('flipped');
         this.innerHTML = this.dataset.symbol;
@@ -131,6 +133,8 @@ restartButton.addEventListener('click', () => {
     flippedCards = [];
     lastFlipped = [];
     stopTimer();
+    Timer = 0;
+    Document.getElementById('timer').textContent = timer;
     resetMoveCounter();
     createBoard();
 });
