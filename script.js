@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     memoryToggle.addEventListener('change', () => {
         memoryChallengeEnabled = memoryToggle.checked;
+        console.log('Memory Challenge Mode:', memoryChallengeEnabled);
     });
 
     restartButton.addEventListener('click', () => {
